@@ -1,0 +1,33 @@
+﻿@page "/Products/Details/{id:int}"
+@using Day2Blazor.Services
+@inject ProductService productService ;
+<PageTitle>Product Details</PageTitle>
+
+<h3>ProductDetailsComponent</h3>
+
+
+<div class="card mt-3 shadow">
+    <div class="card-body">
+        <h4 class="card-title text-center mb-4">Product Details</h4>
+        <p class="card-text"><strong>Name : </strong>@Product?.Name</p>
+        <p class="card-text"><strong>Price : </strong>EGP @Product?.Price</p>
+        <p class="card-text"><strong>Category : </strong>@Product?.Category</p>
+        <p class="card-text"><strong>DriveType : </strong>@Product?.DriveType</p>
+    </div>
+</div>
+
+@code {
+
+    [Parameter] // from route
+    public int id { get; set; }
+
+    public Product? Product { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Product = productService.GetById(id);
+
+        base.OnInitialized();
+    }
+
+}

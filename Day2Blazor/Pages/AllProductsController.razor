@@ -1,0 +1,48 @@
+﻿@page "/Products/All"
+<PageTitle>All Products</PageTitle>
+@inject NavigationManager navManager ;
+@inject ProductService productService ;
+
+<h3>All Products Component</h3>
+
+<div class="row">
+    @foreach (var Product in Products)
+    {
+        <div class="col-md-4">
+            <div class="card mt-3 shadow">
+                <div class="card-body">
+                    <h4 class="card-title text-center mb-4">Product Details</h4>
+                    <p class="card-text"><strong>ID : </strong>@Product?.Id</p>
+                    <p class="card-text"><strong>Name : </strong>@Product?.Name</p>
+                    <p class="card-text"><strong>Price : </strong>$@Product?.Price</p>
+                    <p class="card-text"><strong>Category : </strong>@Product?.Category</p>
+                    <p class="card-text"><strong>DriveType : </strong>@Product?.DriveType</p>
+                    <a class="btn btn-info" @onclick="(() => GoToDetails(Product?.Id))">Details</a>
+                    <a class="btn btn-primary" @onclick="(() => Edit(Product?.Id))">Edit</a>
+
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public List<Product>? Products { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Products = productService.GetAll();
+        base.OnInitialized();
+    }
+
+    async Task GoToDetails(int? id)
+    {
+        navManager.NavigateTo($"/Products/Details/{id}");
+    }
+
+    async Task Edit(int? id)
+    {
+        navManager.NavigateTo($"/Products/Edit/{id}");
+    }
+}

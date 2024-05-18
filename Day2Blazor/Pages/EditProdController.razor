@@ -1,0 +1,79 @@
+﻿@page "/Products/Edit/{id}"
+@inject NavigationManager _navManager ;
+@inject ProductService _productService ;
+@inject CategoryService _categoryService ;
+
+<h3>Edit Product</h3>
+
+@if (productObj != null)
+{
+    <EditForm Model="productObj" OnValidSubmit="Save">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <div class="form-group my-2 col-md-6 ">
+            <label>Name</label>
+            <InputText @bind-Value="productObj.Name" class="form-control"></InputText>
+            <ValidationMessage For="()=>productObj.Name"></ValidationMessage>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6 my-2">
+                <label>Price</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">$</span>
+                    </div>
+                    <InputNumber @bind-Value="productObj.Price" class="form-control"></InputNumber>
+                    <ValidationMessage For="()=>productObj.Price"></ValidationMessage>
+
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="productDriveType">Drive Type</label>
+                <select id="productDriveType" @bind="productObj.DriveType" class="form-control">
+                    <option value="Automatic">Automatic</option>
+                    <option value="Electric">Electric</option>
+                    <option value="Manual">Manual</option>
+                </select>
+                <ValidationMessage For="()=>productObj.DriveType"></ValidationMessage>
+            </div>
+        </div>
+
+        <div class="form-group my-2 col-md-6 ">
+            <label>Category</label>
+            <InputSelect @bind-Value="productObj.CategoryId" class="form-control">
+                <ValidationMessage For="()=>productObj.CategoryId"></ValidationMessage>
+                @foreach (var item in categoriesList)
+                {
+                    <option value="@item.Id">@item.Name</option>
+                }
+            </InputSelect>
+        </div>
+
+        <button type="submit" class="btn btn-success my-3">Save</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    public Product? productObj { get; set; }
+
+    public List<Category> categoriesList { get; set; }
+
+    protected override void OnInitialized()
+    {
+        productObj = _productService.GetById(id);
+        categoriesList = _categoryService.GetAll();
+    }
+
+    async Task Save()
+    {
+        Console.WriteLine("Data saved Successfully");
+
+        _productService.Edit(productObj);
+
+        _navManager.NavigateTo("/Products/Details/" + id);
+    }
+}
